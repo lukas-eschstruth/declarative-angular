@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {defaultIfEmpty, delay, exhaustMap, shareReplay, startWith, switchMap, tap, throttleTime} from 'rxjs/operators';
+import {exhaustMap, shareReplay, startWith, tap, throttleTime} from 'rxjs/operators';
 
 export type User = {
   id: number,
@@ -39,11 +39,13 @@ const DEFAULT_USER: User = {
 })
 export class UserService {
   private selectedUserIdSubject = new Subject<number>();
-  selectedUserId$ = this.selectedUserIdSubject.asObservable();
+  selectedUserId$ = this.selectedUserIdSubject.pipe(
+    // update id at most once every 500ms
+    throttleTime(500)
+  );
+
   // stream of the current user depending on the selected id
-  user$: Observable<User> = this.selectedUserIdSubject.asObservable().pipe(
-    // make at most on call every 500ms
-    throttleTime(500),
+  user$: Observable<User> = this.selectedUserId$.pipe(
     tap(() => this.loadingUserSubject.next(true)),
     // use exhaustMap to ignore new ids while there is an ongoing http call
     exhaustMap(id => this.http.get<User>(`https://jsonplaceholder.typicode.com/users/${id}`),
