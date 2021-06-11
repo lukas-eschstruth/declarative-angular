@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {defaultIfEmpty, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {defaultIfEmpty, delay, exhaustMap, shareReplay, startWith, switchMap, tap, throttleTime} from 'rxjs/operators';
 
 export type User = {
   id: number,
@@ -29,8 +29,8 @@ export type User = {
 
 const DEFAULT_USER: User = {
   id: 0,
-  name: 'default',
-  username: 'username',
+  name: '-',
+  username: '-',
   email: ''
 }
 
@@ -39,13 +39,23 @@ const DEFAULT_USER: User = {
 })
 export class UserService {
   private selectedUserIdSubject = new Subject<number>();
+  private loadingUserSubject = new BehaviorSubject<boolean>(false);
 
-  user$ = this.selectedUserIdSubject.asObservable().pipe(
-    switchMap(id => this.http.get<User>(`https://jsonplaceholder.typicode.com/users/${id}`),
+  // stream of the current user depending on the selected id
+  user$: Observable<User> = this.selectedUserIdSubject.asObservable().pipe(
+    // make at most on call every 500ms
+    throttleTime(500),
+    tap(() => this.loadingUserSubject.next(true)),
+    // use exhaustMap to ignore new ids while there is an ongoing http call
+    exhaustMap(id => this.http.get<User>(`https://jsonplaceholder.typicode.com/users/${id}`),
     ),
     startWith(DEFAULT_USER),
+    // cache the last result so duplicate network calls are avoided
     shareReplay(1),
+    tap(() => this.loadingUserSubject.next(false)),
   );
+
+  loadingUser$ = this.loadingUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
   }

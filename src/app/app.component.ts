@@ -15,6 +15,10 @@ export class AppComponent {
     return this.userService.user$;
   }
 
+  get loading$(): Observable<boolean> {
+    return this.userService.loadingUser$;
+  }
+
   onLoadUserClicked() {
     this.userService.loadRandomUser();
   }

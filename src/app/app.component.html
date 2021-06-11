@@ -1,8 +1,5 @@
-<div *ngIf="user$ | async as user; else loading">
-  <p>{{user.name}}</p>
-</div>
-<button (click)="onLoadUserClicked()">Load random User</button>
-<div *ngIf="user$ | async as user; else loading">
-  <p>{{user.username}}</p>
-</div>
-<ng-template #loading>Loading...</ng-template>
+<p *ngIf="user$ | async as user">{{user.name}}</p>
+<!-- subscribe twice for demo purposes -->
+<pre *ngIf="user$ | async as user">@{{user.username}}</pre>
+
+<button [disabled]="loading$ | async" (click)="onLoadUserClicked()">Load random User</button>
