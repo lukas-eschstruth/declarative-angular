@@ -1,5 +1,10 @@
-<p *ngIf="user$ | async as user">{{user.name}}</p>
-<!-- subscribe twice for demo purposes -->
-<pre *ngIf="user$ | async as user">@{{user.username}}</pre>
+<ng-container *ngIf="user$ | async as user">
+  <app-user-details [user]="user"></app-user-details>
+</ng-container>
 
 <button [disabled]="loading$ | async" (click)="onLoadUserClicked()">Load random User</button>
+
+<!-- Subscribe twice to demo shareReplay buffer: despite multiple sbscriptions only one http call is executed -->
+<ng-container *ngIf="user$ | async as user">
+  <app-user-posts [user]="user" [posts]="posts$ | async"></app-user-posts>
+</ng-container>

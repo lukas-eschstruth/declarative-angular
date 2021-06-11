@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
+import {Post, PostsService} from './services/posts.service';
 import {User, UserService} from './services/user.service';
 
 @Component({
@@ -8,7 +9,7 @@ import {User, UserService} from './services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private postsService: PostsService) {
   }
 
   get user$(): Observable<User> {
@@ -17,6 +18,10 @@ export class AppComponent {
 
   get loading$(): Observable<boolean> {
     return this.userService.loadingUser$;
+  }
+
+  get posts$(): Observable<Post[]> {
+    return this.postsService.posts$;
   }
 
   onLoadUserClicked() {

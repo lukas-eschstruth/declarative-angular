@@ -39,8 +39,7 @@ const DEFAULT_USER: User = {
 })
 export class UserService {
   private selectedUserIdSubject = new Subject<number>();
-  private loadingUserSubject = new BehaviorSubject<boolean>(false);
-
+  selectedUserId$ = this.selectedUserIdSubject.asObservable();
   // stream of the current user depending on the selected id
   user$: Observable<User> = this.selectedUserIdSubject.asObservable().pipe(
     // make at most on call every 500ms
@@ -55,6 +54,7 @@ export class UserService {
     tap(() => this.loadingUserSubject.next(false)),
   );
 
+  private loadingUserSubject = new BehaviorSubject<boolean>(false);
   loadingUser$ = this.loadingUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
