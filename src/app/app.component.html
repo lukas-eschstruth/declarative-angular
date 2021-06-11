@@ -2,4 +2,7 @@
   <p>{{user.name}}</p>
 </div>
 <button (click)="onLoadUserClicked()">Load random User</button>
+<div *ngIf="user$ | async as user; else loading">
+  <p>{{user.username}}</p>
+</div>
 <ng-template #loading>Loading...</ng-template>
