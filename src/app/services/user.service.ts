@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {exhaustMap, shareReplay, startWith, tap, throttleTime} from 'rxjs/operators';
+import {RandomIntegerGenerator} from '../utils/random';
 
 export type User = {
   id: number,
@@ -34,14 +35,17 @@ const DEFAULT_USER: User = {
   email: ''
 }
 
+const randomIntegerGenerator = new RandomIntegerGenerator(3);
+
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private selectedUserIdSubject = new Subject<number>();
   selectedUserId$ = this.selectedUserIdSubject.pipe(
-    // update id at most once every 500ms
-    throttleTime(500)
+    // update id at most once every second and replay value for all following subscribers
+    throttleTime(1000),
+    shareReplay(1),
   );
 
   // stream of the current user depending on the selected id
@@ -62,13 +66,9 @@ export class UserService {
   constructor(private http: HttpClient) {
   }
 
-  loadUser(id: number) {
-    this.selectedUserIdSubject.next(id);
-  }
-
   loadRandomUser() {
-    const id = Math.ceil(Math.random() * 10);
-    this.loadUser(id);
+    const id = randomIntegerGenerator.next();
+    this.selectedUserIdSubject.next(id);
   }
 }
 
