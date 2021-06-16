@@ -3,6 +3,7 @@
 </ng-container>
 
 <button [disabled]="loading$ | async" (click)="onLoadUserClicked()">Load random User</button>
+<button (click)="onRandomButtonClicked()">random button</button>
 
 <!-- Subscribe twice to demo shareReplay buffer: despite multiple sbscriptions only one http call is executed -->
 <ng-container *ngIf="user$ | async as user">
