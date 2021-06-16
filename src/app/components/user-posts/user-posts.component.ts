@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {Observable} from 'rxjs';
 import {Post} from 'src/app/services/posts.service';
 import {User} from 'src/app/services/user.service';
 
@@ -9,5 +10,5 @@ import {User} from 'src/app/services/user.service';
 })
 export class UserPostsComponent {
   @Input() user!: User;
-  @Input() posts!: Post[] | null;
+  @Input() posts$!: Observable<Post[]>;
 }

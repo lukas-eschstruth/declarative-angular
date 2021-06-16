@@ -7,5 +7,5 @@
 
 <!-- Subscribe twice to demo shareReplay buffer: despite multiple sbscriptions only one http call is executed -->
 <ng-container *ngIf="user$ | async as user">
-  <app-user-posts [user]="user" [posts]="posts$ | async"></app-user-posts>
+  <app-user-posts [user]="user" [posts$]="posts$"></app-user-posts>
 </ng-container>

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {Post, PostsService} from './services/posts.service';
 import {User, UserService} from './services/user.service';
 
@@ -29,6 +29,7 @@ export class AppComponent {
   }
 
   onLoadUserClicked() {
+    console.log('onLoadUserClicked');
     this.userService.loadRandomUser();
   }
 
