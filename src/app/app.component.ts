@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {Post, PostsService} from './services/posts.service';
 import {User, UserService} from './services/user.service';
 
@@ -13,12 +14,9 @@ export class AppComponent {
   constructor(private userService: UserService, private postsService: PostsService) {
   }
 
-  get user$(): Observable<User> {
-    // a console.log as quick and dirty measure of how often change detection is run
-    // set changeDetection to ChangeDetectionStrategy.Default to see the difference
-    console.log('get user$() called');
-    return this.userService.user$;
-  }
+  // a console.log as quick and dirty measure of how often change detection is run
+  // set changeDetection to ChangeDetectionStrategy.Default to see the difference
+  user$: Observable<User> = this.userService.user$.pipe(tap(() => console.log('get user$() called')));
 
   get loading$(): Observable<boolean> {
     return this.userService.loadingUser$;
@@ -31,11 +29,6 @@ export class AppComponent {
   onLoadUserClicked() {
     console.log('onLoadUserClicked');
     this.userService.loadRandomUser();
-  }
-
-  onRandomButtonClicked() {
-    console.log('onRandomButtonClicked');
-
   }
 }
 

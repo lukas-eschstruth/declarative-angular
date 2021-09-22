@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {exhaustMap, shareReplay, startWith, tap, throttleTime} from 'rxjs/operators';
+import {exhaustMap, map, shareReplay, startWith, tap, throttleTime} from 'rxjs/operators';
 import {RandomIntegerGenerator} from '../utils/random';
 
 export type User = {
@@ -41,10 +41,11 @@ const randomIntegerGenerator = new RandomIntegerGenerator(3);
   providedIn: 'root'
 })
 export class UserService {
-  private selectedUserIdSubject = new Subject<number>();
-  selectedUserId$ = this.selectedUserIdSubject.pipe(
-    // update id at most once every quarter second and replay value for all following subscribers
-    throttleTime(250),
+  private randomUserRequest = new Subject<void>();
+  selectedUserId$: Observable<number> = this.randomUserRequest.pipe(
+    // update id at most once every second and replay value for all following subscribers
+    throttleTime(1000),
+    map(() =>randomIntegerGenerator.next()),
     shareReplay(1),
   );
 
@@ -67,8 +68,7 @@ export class UserService {
   }
 
   loadRandomUser() {
-    const id = randomIntegerGenerator.next();
-    this.selectedUserIdSubject.next(id);
+    this.randomUserRequest.next();
   }
 }
 
