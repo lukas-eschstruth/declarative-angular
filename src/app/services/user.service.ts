@@ -43,8 +43,8 @@ const randomIntegerGenerator = new RandomIntegerGenerator(3);
 export class UserService {
   private selectedUserIdSubject = new Subject<number>();
   selectedUserId$ = this.selectedUserIdSubject.pipe(
-    // update id at most once every second and replay value for all following subscribers
-    throttleTime(1000),
+    // update id at most once every quarter second and replay value for all following subscribers
+    throttleTime(250),
     shareReplay(1),
   );
 
