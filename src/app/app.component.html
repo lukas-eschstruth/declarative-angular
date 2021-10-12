@@ -1,10 +1,8 @@
-<div *ngIf="user$ | async as user" class="component-container">
-  <app-user-details [user]="user"></app-user-details>
-</div>
-<button [disabled]="loading$ | async" (click)="onLoadUserClicked()">Load random User</button>
-
-
-<!-- Subscribe twice to demo shareReplay buffer: despite multiple sbscriptions only one http call is executed -->
-<div *ngIf="user$ | async as user"  class="component-container">
-  <app-user-posts [user]="user" [posts$]="posts$"></app-user-posts>
-</div>
+<header>
+  <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{exact:
+    true}">Home</a>
+  <a routerLink="/leak" routerLinkActive="active">Leak</a>
+</header>
+<main>
+  <router-outlet></router-outlet>
+</main>

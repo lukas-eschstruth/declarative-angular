@@ -5,12 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { UserPostsComponent } from './components/user-posts/user-posts.component';
+import { MemoryLeakComponent } from './components/memory-leak/memory-leak.component';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserDetailsComponent,
-    UserPostsComponent
+    UserPostsComponent,
+    MemoryLeakComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
