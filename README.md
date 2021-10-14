@@ -17,3 +17,36 @@ If you are only interested in the first emission anyways and don't want to liste
 
 ### Use the async pipe
 The solution that requires the least Typescript code is using the `async` pipe in the template. This will automatically subscribe and unsubscribe to the given observable. 
+
+## RxJS Operators for common data and event handling tasks
+There are many reoccuring tasks in FE Applications like sharing and caching fetched data or reloading data after an event that can be handled with Observables and RxJS Operators (inside a chain of funtions added to the Observable with `.pipe`). Checkout the [UserService](src/app/services/user.service.ts) for some examples.
+
+### Cache results to avoid duplicate network calls
+This can be achieved by using the `shareReplay` operator which will save the latest emitted value of a stream and give it to later subscribers directly without triggering logic that came before it (e.g. a network call).
+
+### Giving a stream a default value
+You can use `startWith` to give an Observable stream a starting value. Combined with `shareReplay` this will behave like a `BehaviorSubject`.
+
+### Force a refresh
+How can you force refresh an Observable like
+```typescript
+this.http.get(...)
+  .pipe(shareReplay(1))
+```
+which will cache values for later subscribers? 
+
+This is not done with a simple operator but requires a little refactoring. Translated to RxJS "refreshing" means listen to another Observable (refresh requests over time) and trigger the original action every time a new value is emitted (a refresh is requested). 
+
+To achieve a refreshable (but still cached Observable) we can write something like this:
+```typescript
+export class MyService {
+  private refreshRequest = new Subject<void>();
+  data$ = this.refreshRequest.pipe(
+    //get data
+    ...
+  )
+
+  onRefreshButtonPressed() {
+    this.refreshRequest.next();
+  }
+```
