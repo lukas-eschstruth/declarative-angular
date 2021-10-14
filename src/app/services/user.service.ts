@@ -30,7 +30,7 @@ export type User = {
 
 const DEFAULT_USER: User = {
   id: 0,
-  name: '-',
+  name: 'banan',
   username: '-',
   email: ''
 }
@@ -42,15 +42,15 @@ const randomIntegerGenerator = new RandomIntegerGenerator(3);
 })
 export class UserService {
   private randomUserRequest = new Subject<void>();
-  selectedUserId$: Observable<number> = this.randomUserRequest.pipe(
+  readonly selectedUserId$: Observable<number> = this.randomUserRequest.pipe(
     // update id at most once every second and replay value for all following subscribers
-    throttleTime(1000),
+    throttleTime(5000),
     map(() =>randomIntegerGenerator.next()),
     shareReplay(1),
   );
 
   // stream of the current user depending on the selected id
-  user$: Observable<User> = this.selectedUserId$.pipe(
+  readonly user$: Observable<User> = this.selectedUserId$.pipe(
     tap(() => this.loadingUserSubject.next(true)),
     // use exhaustMap to ignore new ids while there is an ongoing http call
     exhaustMap(id => this.http.get<User>(`https://jsonplaceholder.typicode.com/users/${id}`),

@@ -9,26 +9,26 @@ import {RandomIntegerGenerator} from 'src/app/utils/random';
   templateUrl: './memory-leak.component.html',
   styleUrls: ['./memory-leak.component.scss']
 })
-// // ### Naive Version without unsubscribe logic
-// export class MemoryLeakComponent implements OnInit, OnDestroy {
-//   user?: User;
-//   instanceId = new RandomIntegerGenerator(999).next();
+// ### Naive Version without unsubscribe logic
+export class MemoryLeakComponent implements OnInit, OnDestroy {
+  user?: User;
+  instanceId = new RandomIntegerGenerator(999).next();
 
-//   constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {}
 
-//   ngOnInit() {
-//     console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnInit`)
+  ngOnInit() {
+    console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnInit`)
 
-//     this.userService.user$.subscribe(user => {
-//       console.log(`[MemoryLeakComponent ${this.instanceId}]: new user with id ${user.id}`)
-//       this.user = user;
-//     })
-//   }
+    this.userService.user$.subscribe(user => {
+      console.log(`[MemoryLeakComponent ${this.instanceId}]: new user with id ${user.id}`)
+      this.user = user;
+    })
+  }
 
-//   ngOnDestroy() {
-//     console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnDestroy`)
-//   }
-// }
+  ngOnDestroy() {
+    console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnDestroy`)
+  }
+}
 // // ### Version with manual unsubscribe
 // export class MemoryLeakComponent implements OnInit, OnDestroy {
 //   user?: User;
@@ -73,26 +73,26 @@ import {RandomIntegerGenerator} from 'src/app/utils/random';
 //     this.componentDestroyed$.next();
 //   }
 // }
-// ### Version with just one take
-export class MemoryLeakComponent implements OnInit, OnDestroy {
-  user?: User;
-  instanceId = new RandomIntegerGenerator(999).next();
+// // ### Version with just one take
+// export class MemoryLeakComponent implements OnInit, OnDestroy {
+//   user?: User;
+//   instanceId = new RandomIntegerGenerator(999).next();
 
-  constructor(private userService: UserService) {}
+//   constructor(private userService: UserService) {}
 
-  ngOnInit() {
-    console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnInit`)
+//   ngOnInit() {
+//     console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnInit`)
 
-    this.userService.user$.pipe(take(1)).subscribe(user => {
-      console.log(`[MemoryLeakComponent ${this.instanceId}]: new user with id ${user.id}`)
-      this.user = user;
-    })
-  }
+//     this.userService.user$.pipe(take(3)).subscribe(user => {
+//       console.log(`[MemoryLeakComponent ${this.instanceId}]: new user with id ${user.id}`)
+//       this.user = user;
+//     })
+//   }
 
-  ngOnDestroy() {
-    console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnDestroy`);
-  }
-}
+//   ngOnDestroy() {
+//     console.log(`[MemoryLeakComponent ${this.instanceId}]: ngOnDestroy`);
+//   }
+// }
 // // ### Version with async pipe
 // export class MemoryLeakComponent implements OnInit, OnDestroy {
 //   instanceId = new RandomIntegerGenerator(999).next();
