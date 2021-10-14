@@ -1,27 +1,19 @@
-# DeclarativeNg
+# RxJS Recipes
+This repository demonstrates some recipes and options for using RxJS features for common problems in Angular Apps.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.3.
+Start the app with `npm start` and play around with it on `localhost:4200`. Open the console to see more info.
 
-## Development server
+## Avoiding Memory Leaks
+A memory leak in  in an Angular App can occur if Subscriptions to RxJS Obersvables are not cleaned upd properly (unsubscribed) once they are no longer needed, e.g. when the component is destroyed. Take a look at [the MemoryLeakComponent](src/app/components/memory-leak/memory-leak.component.ts) to see this and all possible solutions in action.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### Manual unsubscribe
+You can save a reference to the subscription and manually unsubscribe once you no longer need it, e.g. when a component is destroyed. This is quite some work and can be easy to forget.
 
-## Code scaffolding
+### Automatic unsubscribe on Destroy
+A more automatic way of the manual usubscribe is to use `takeUntil`. This will end a stream once the observable you specify emits. You can then use a `Subject` that only emits once the component is destroyed and thus ends all Subscriptions it is connected to with `takeUntil`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Automatic unsubscribe after the first value
+If you are only interested in the first emission anyways and don't want to listen for later values you can use `take(1)` to complete the stream after the first emission. 
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Use the async pipe
+The solution that requires the least Typescript code is using the `async` pipe in the template. This will automatically subscribe and unsubscribe to the given observable. 
